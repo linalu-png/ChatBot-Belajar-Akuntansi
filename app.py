@@ -15,7 +15,7 @@ if not api_key:
     st.stop()
 
 client = Groq(api_key=api_key)
-
+print("GROQ_API_KEY:", os.getenv("GROQ_API_KEY"))
 # ============= CSS =============
 st.markdown("""
 <style>
@@ -115,6 +115,7 @@ if user_input and user_input.strip():
 
     # Refresh tampilan
     st.rerun()
+
 
 
 
