@@ -96,17 +96,17 @@ if user_input and user_input.strip():
     st.session_state.history.append(("user", message))
 
     # Panggil LLM tanpa menduplikasi history
-        try:
-            messages = [{"role": "system", "content": "Kamu adalah chatbot akuntansi yang chill, ramah, dan mudah dipahami."}]
-            messages += [{"role": role, "content": content} for role, content in st.session_state.history]
+    try:
+        messages = [{"role": "system", "content": "Kamu adalah chatbot akuntansi yang chill, ramah, dan mudah dipahami."}]
+        messages += [{"role": role, "content": content} for role, content in st.session_state.history]
 
-            response = client.chat.completions.create(
-                model="llama-3.3-70b-versatile",
-                messages=messages
-            )
-            bot_reply = response.choices[0].message["content"]
-        except Exception as e:
-            bot_reply = f"❌ Terjadi error saat memanggil API: {e}"
+        response = client.chat.completions.create(
+            model="llama-3.3-70b-versatile",
+            messages=messages
+        )
+        bot_reply = response.choices[0].message["content"]
+    except Exception as e:
+        bot_reply = f"❌ Terjadi error saat memanggil API: {e}"
 
     st.session_state.history.append(("assistant", bot_reply))
 
@@ -115,6 +115,7 @@ if user_input and user_input.strip():
 
     # Refresh tampilan
     st.rerun()
+
 
 
 
