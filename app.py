@@ -6,7 +6,15 @@ from groq import Groq
 # ============= CONFIG =============
 st.set_page_config(page_title="Belajar Akuntansi", layout="centered")
 
+# Load environment variable
+load_dotenv()
 api_key = os.getenv("GROQ_API_KEY")
+
+if not api_key:
+    st.error("❌ API Key Groq tidak ditemukan. Pastikan sudah di-set di .env atau di Streamlit Secrets.")
+    st.stop()
+
+client = Groq(api_key=api_key)
 
 # ============= CSS =============
 st.markdown("""
@@ -88,17 +96,17 @@ if st.session_state.text_input and st.session_state.text_input.strip():
     st.session_state.history.append(("user", message))
 
     # Panggil LLM tanpa menduplikasi history
-    response = client.chat.completions.create(
-        model="llama3-8b-8192",
-        messages=[
-            {"role": "system", "content": "Kamu adalah chatbot akuntansi yang chill, ramah, dan mudah dipahami."}
-        ] + [
-            {"role": role, "content": content}
-            for role, content in st.session_state.history
-        ]
-    )
+      try:
+        messages = [{"role": "system", "content": "Kamu adalah chatbot akuntansi yang chill, ramah, dan mudah dipahami."}]
+        messages += [{"role": role, "content": content} for role, content in st.session_state.history]
 
-    bot_reply = response.choices[0].message.content
+        response = client.chat.completions.create(
+            model="llama-3.3-70b-versatile",
+            messages=messages
+        )
+        bot_reply = response.choices[0].message["content"]
+    except Exception as e:
+        bot_reply = f"❌ Terjadi error saat memanggil API: {e}"
 
     # Simpan jawaban sekali
     st.session_state.history.append(("assistant", bot_reply))
@@ -108,6 +116,7 @@ if st.session_state.text_input and st.session_state.text_input.strip():
 
     # Refresh tampilan
     st.rerun()
+
 
 
 
