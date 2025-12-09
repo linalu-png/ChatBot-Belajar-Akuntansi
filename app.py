@@ -5,12 +5,7 @@ from groq import Groq
 # ================= CONFIG =================
 st.set_page_config(page_title="Belajar Akuntansi", layout="centered")
 
-api_key = "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"
-if not api_key:
-    st.error("❌ API Key Groq tidak ditemukan.")
-    st.stop()
-
-client = Groq(api_key=api_key)
+api_key = os.getenv("GROQ_API_KEY")
 
 
 # ================= CSS =================
@@ -56,7 +51,7 @@ def handle_submit():
         try:
             messages = [{"role": "system", "content": "Kamu adalah chatbot akuntansi yang chill, ramah, dan mudah dipahami."}]
             messages += [{"role": role, "content": content} for role, content in st.session_state.history]
-
+client = Groq(api_key=api_key)
             response = client.chat.completions.create(
                 model="llama-3.3-70b-versatile",
                 messages=messages
