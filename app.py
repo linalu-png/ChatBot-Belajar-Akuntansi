@@ -1,20 +1,11 @@
 import streamlit as st
 import os
-from dotenv import load_dotenv
 from groq import Groq
 
 # ============= CONFIG =============
 st.set_page_config(page_title="Belajar Akuntansi", layout="centered")
 
-# Load environment variable
-load_dotenv()
 api_key = os.getenv("GROQ_API_KEY")
-
-if not api_key:
-    st.error("❌ API Key Groq tidak ditemukan. Pastikan sudah di-set di .env atau Streamlit Secrets.")
-    st.stop()
-
-client = Groq(api_key=api_key)
 
 # ============= CSS =============
 st.markdown("""
@@ -77,3 +68,4 @@ if user_input and user_input.strip():
 
     # Reset input text agar kosong setelah submit
     st.session_state.text_input = ""
+
