@@ -1,4 +1,31 @@
-      - name: Run app
+name: Deploy Streamlit App
+
+# Jalankan workflow setiap kali ada push ke branch main
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  run-streamlit:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout repository
+      - uses: actions/checkout@v3
+
+      # 2. Setup Python
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.13"
+
+      # 3. Install dependencies
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      # 4. Jalankan Streamlit App
+      - name: Run Streamlit
         env:
-          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
-        run: python app.py
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}  # <- ambil API Key dari GitHub Secrets
+        run: streamlit run app.py
