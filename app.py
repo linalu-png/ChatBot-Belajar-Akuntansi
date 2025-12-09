@@ -6,14 +6,8 @@ from groq import Groq
 # ============= CONFIG =============
 st.set_page_config(page_title="Belajar Akuntansi", layout="centered")
 
-load_dotenv()
 api_key = os.getenv("GROQ_API_KEY")
 
-if not api_key:
-    st.error("❌ API Key Groq tidak ditemukan.")
-    st.stop()
-
-client = Groq(api_key=api_key)
 
 # ============= CSS =============
 st.markdown("""
@@ -115,4 +109,5 @@ if st.session_state.text_input and st.session_state.text_input.strip():
 
     # Refresh tampilan
     st.rerun()
+
 
