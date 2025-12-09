@@ -37,12 +37,24 @@ for role, text in st.session_state.history:
         st.markdown(f'<div class="user-bubble">{text}</div>', unsafe_allow_html=True)
 st.markdown('</div>', unsafe_allow_html=True)
 # ================= INPUT USER =================
-with st.form("chat_form", clear_on_submit=True):
-    user_input = st.text_input("Ketik pertanyaanmu…", placeholder="Tulis sesuatu...")
-    submitted = st.form_submit_button("Kirim")
-    if submitted and user_input.strip():
-        st.session_state.history.append(("user", user_input.strip()))
-        # Panggil API seperti biasa
+if user_input and user_input.strip():
+    st.session_state.history.append(("user", user_input.strip()))
+
+    try:
+        messages = [{"role": "system", "content": "Kamu adalah chatbot akuntansi yang chill, ramah, dan mudah dipahami."}]
+        messages += [{"role": role, "content": content} for role, content in st.session_state.history]
+
+        response = client.chat.completions.create(
+            model="llama-3.3-70b-versatile",
+            messages=messages
+        )
+        bot_reply = response.choices[0].message["content"]
+    except Exception as e:
+        bot_reply = f"❌ Terjadi error saat memanggil API: {e}"
+
+    st.session_state.history.append(("assistant", bot_reply))
+
+
 
 
 
