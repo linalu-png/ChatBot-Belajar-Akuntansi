@@ -7,7 +7,7 @@ st.set_page_config(page_title="Belajar Akuntansi", layout="centered")
 
 api_key = os.getenv("GROQ_API_KEY")
 if not api_key:
-    st.error("❌ API Key Groq tidak ditemukan. Pastikan sudah di-set di .env atau Streamlit Secrets.")
+    st.error("❌ API Key Groq tidak ditemukan.")
     st.stop()
 
 client = Groq(api_key=api_key)
@@ -73,3 +73,4 @@ if user_input and user_input.strip():
 
     # Reset input text agar kosong setelah submit
     st.session_state.text_input = ""
+
