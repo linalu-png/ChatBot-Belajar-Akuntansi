@@ -67,5 +67,6 @@ if user_input and user_input.strip():
     st.session_state.history.append(("assistant", bot_reply))
 
     # Reset input text agar kosong setelah submit
-    st.session_state.text_input = ""
+   st.session_state["text_input"] = ""
+
 
