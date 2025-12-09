@@ -6,6 +6,12 @@ from groq import Groq
 st.set_page_config(page_title="Belajar Akuntansi", layout="centered")
 
 api_key = os.getenv("GROQ_API_KEY")
+if not api_key:
+    st.error("❌ API Key Groq tidak ditemukan.")
+    st.stop()
+
+client = Groq(api_key=api_key)
+
 
 # ================= CSS =================
 st.markdown("""
@@ -71,6 +77,7 @@ st.text_input(
     key="text_input",
     on_change=handle_submit
 )
+
 
 
 
