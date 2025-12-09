@@ -37,22 +37,30 @@ for role, text in st.session_state.history:
         st.markdown(f'<div class="user-bubble">{text}</div>', unsafe_allow_html=True)
 st.markdown('</div>', unsafe_allow_html=True)
 # ================= INPUT USER =================
+user_input = st.text_input(
+    "Ketik pertanyaanmu…",
+    placeholder="Tulis sesuatu...",
+    key="text_input"
+)
+
 if user_input and user_input.strip():
-    st.session_state.history.append(("user", user_input.strip()))
 
+    message = user_input.strip()
+    st.session_state.history.append(("user", message))
+
+    # Panggil Groq LLM
     try:
-        messages = [{"role": "system", "content": "Kamu adalah chatbot akuntansi yang chill, ramah, dan mudah dipahami."}]
-        messages += [{"role": role, "content": content} for role, content in st.session_state.history]
-
         response = client.chat.completions.create(
             model="llama-3.3-70b-versatile",
-            messages=messages
+            messages=[{"role": "system", "content": "Kamu adalah chatbot akuntansi yang chill, ramah, dan mudah dipahami."}]
+                     + [{"role": role, "content": content} for role, content in st.session_state.history]
         )
         bot_reply = response.choices[0].message["content"]
     except Exception as e:
-        bot_reply = f"❌ Terjadi error saat memanggil API: {e}"
+        bot_reply = f"Terjadi error saat memanggil API: {e}"
 
     st.session_state.history.append(("assistant", bot_reply))
+
 
 
 
