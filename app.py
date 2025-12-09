@@ -5,9 +5,14 @@ from groq import Groq
 # ================= CONFIG =================
 st.set_page_config(page_title="Belajar Akuntansi", layout="centered")
 
+# Ambil API Key dari environment atau Streamlit Secrets
 api_key = os.getenv("GROQ_API_KEY")
+if not api_key:
+    st.error("❌ API Key Groq tidak ditemukan. Pastikan sudah set di .env atau Streamlit Secrets.")
+    st.stop()
 
-
+# Buat client Groq
+client = Groq(api_key=api_key)
 # ================= CSS =================
 st.markdown("""
 <style>
@@ -72,6 +77,7 @@ st.text_input(
     key="text_input",
     on_change=handle_submit
 )
+
 
 
 
