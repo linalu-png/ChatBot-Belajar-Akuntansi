@@ -3,154 +3,116 @@ import os
 from dotenv import load_dotenv
 from groq import Groq
 
-# -------------------------------------------------------
-# STREAMLIT CONFIG
-# -------------------------------------------------------
-st.set_page_config(
-    page_title="Belajar Akuntansi",
-    layout="centered"
-)
+# ============= CONFIG =============
+st.set_page_config(page_title="Belajar Akuntansi", layout="centered")
 
-# -------------------------------------------------------
-# LOAD ENV
-# -------------------------------------------------------
 load_dotenv()
-GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+api_key = os.getenv("GROQ_API_KEY")
 
-if not GROQ_API_KEY:
+if not api_key:
     st.error("❌ API Key Groq tidak ditemukan.")
     st.stop()
 
-client = Groq(api_key=GROQ_API_KEY)
+client = Groq(api_key=api_key)
 
-# -------------------------------------------------------
-# CUSTOM CSS (WhatsApp style rolling chat)
-# -------------------------------------------------------
+# ============= CSS =============
 st.markdown("""
 <style>
-
 body {
-    background-color: #f5f7fa;
-    font-family: 'Roboto', sans-serif;
+    background-color: #f2f4f7;
+    font-family: 'Inter', sans-serif;
 }
-
-/* Container utama */
-.chat-box {
+.header-box {
+    text-align: center;
+    padding: 18px;
+    background: #7b4bc2;
+    color: white;
+    font-size: 24px;
+    border-radius: 0 0 12px 12px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+.chat-container {
+    width: 100%;
     max-width: 650px;
     margin: auto;
-    background: #ffffff;
-    padding: 15px;
-    border-radius: 10px;
+    padding: 5px 15px;
 }
-
-/* Bubble User */
-.chat-bubble-user {
-    background: #d1e7ff;
-    padding: 10px 14px;
-    border-radius: 15px;
+.bot-bubble, .user-bubble {
+    padding: 12px 16px;
+    border-radius: 16px;
     margin: 8px 0;
-    max-width: 75%;
-    margin-left: auto;
-    color: black;
-    animation: fadeIn 0.25s ease-in;
+    max-width: 80%;
+    font-size: 16px;
 }
-
-/* Bubble Bot */
-.chat-bubble-bot {
+.bot-bubble {
     background: #ffffff;
-    padding: 10px 14px;
-    border-radius: 15px;
-    border: 1px solid #ddd;
-    margin: 8px 0;
-    max-width: 75%;
+    border: 1px solid #e5e5e5;
+    color: #000;
     margin-right: auto;
-    color: black;
-    animation: fadeIn 0.25s ease-in;
 }
-
-/* Header */
-.header {
-    text-align: center;
-    padding: 15px;
-    background: #0dbf6f;
-    color: white;
-    border-radius: 0 0 10px 10px;
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 20px;
+.user-bubble {
+    background: #cfe1ff;
+    color: #000;
+    margin-left: auto;
 }
-
-/* Animasi bubble */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(5px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
 </style>
 """, unsafe_allow_html=True)
 
-# -------------------------------------------------------
-# HEADER
-# -------------------------------------------------------
-st.markdown('<div class="header">Selamat Datang di ChatBot Belajar Akuntansi</div>', unsafe_allow_html=True)
+# ============= HEADER =============
+st.markdown('<div class="header-box">Belajar Akuntansi</div>', unsafe_allow_html=True)
 
-# -------------------------------------------------------
-# SESSION STATE
-# -------------------------------------------------------
-if "chat_history" not in st.session_state:
-    st.session_state.chat_history = []
+# ============= SESSION FIX =============
+if "history" not in st.session_state:
+    st.session_state.history = [
+        ("assistant", "Halo! Selamat datang di ChatBot **Belajar Akuntansi**. Mau mulai dari penjelasan materi atau latihan soal?")
+    ]
 
-# -------------------------------------------------------
-# TAMPILAN CHAT (rolling)
-# -------------------------------------------------------
-st.markdown('<div class="chat-box">', unsafe_allow_html=True)
+# ============= TAMPILKAN CHAT =============
+st.markdown('<div class="chat-container">', unsafe_allow_html=True)
 
-for role, text in st.session_state.chat_history:
-    if role == "user":
-        st.markdown(f'<div class="chat-bubble-user">{text}</div>', unsafe_allow_html=True)
+for role, text in st.session_state.history:
+    if role == "assistant":
+        st.markdown(f'<div class="bot-bubble">{text}</div>', unsafe_allow_html=True)
     else:
-        st.markdown(f'<div class="chat-bubble-bot">{text}</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="user-bubble">{text}</div>', unsafe_allow_html=True)
 
 st.markdown('</div>', unsafe_allow_html=True)
 
-# -------------------------------------------------------
-# INPUT PENGGUNA (seperti WA)
-# -------------------------------------------------------
+# ============= INPUT FIX =============
 user_input = st.text_input(
-    "Ketik pertanyaan atau minta latihan soal...",
-    placeholder="contoh: jelaskan persamaan dasar akuntansi"
+    "Ketik pertanyaanmu…",
+    placeholder="Tulis sesuatu...",
+    key="text_input"
 )
 
-# -------------------------------------------------------
-# PROSES JAWABAN
-# -------------------------------------------------------
-if user_input:
+# Jika ada input baru
+if st.session_state.text_input and st.session_state.text_input.strip():
 
-    # Simpan pesan user
-    st.session_state.chat_history.append(("user", user_input))
+    message = st.session_state.text_input.strip()
 
-    system_prompt = """
-    Kamu adalah asisten belajar akuntansi yang santai, jelas, dan mudah dipahami.
-    Gunakan bahasa chill namun tetap rapi.
-    
-    Mode:
-    - Jika user bertanya konsep → jelaskan langkah demi langkah.
-    - Jika user minta latihan soal → berikan 1–3 soal + jawabannya setelah user mencoba.
-    - Jangan mengulang salam atau menyimpulkan percakapan lama.
-    """
+    # Masukkan pesan user satu kali
+    st.session_state.history.append(("user", message))
 
+    # Panggil LLM tanpa menduplikasi history
     response = client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
+        model="llama3-8b-8192",
         messages=[
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_input}
-        ],
-        temperature=0.2
+            {"role": "system", "content": "Kamu adalah chatbot akuntansi yang chill, ramah, dan mudah dipahami."}
+        ] + [
+            {"role": role, "content": content}
+            for role, content in st.session_state.history
+        ]
     )
 
     bot_reply = response.choices[0].message.content
 
-    # Tambahkan jawaban bot
-    st.session_state.chat_history.append(("assistant", bot_reply))
+    # Simpan jawaban sekali
+    st.session_state.history.append(("assistant", bot_reply))
 
+    # Reset input tanpa error
+    st.session_state.text_input = ""
+
+    # Refresh tampilan
     st.rerun()
+
