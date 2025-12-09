@@ -90,7 +90,7 @@ if st.session_state.text_input and st.session_state.text_input.strip():
 
     # Panggil LLM tanpa menduplikasi history
     response = client.chat.completions.create(
-        model="llama3-8b-8192",
+        model="llama-3.3-70b-versatile",
         messages=[
             {"role": "system", "content": "Kamu adalah chatbot akuntansi yang chill, ramah, dan mudah dipahami."}
         ] + [
@@ -109,5 +109,6 @@ if st.session_state.text_input and st.session_state.text_input.strip():
 
     # Refresh tampilan
     st.rerun()
+
 
 
