@@ -1,12 +1,10 @@
 import streamlit as st
 import os
-from dotenv import load_dotenv
 from groq import Groq
 
 # ================= CONFIG =================
 st.set_page_config(page_title="Belajar Akuntansi", layout="centered")
 
-load_dotenv()
 api_key = os.getenv("GROQ_API_KEY")
 if not api_key:
     st.error("❌ API Key Groq tidak ditemukan.")
@@ -78,3 +76,4 @@ st.text_input(
     key="text_input",
     on_change=handle_submit
 )
+
