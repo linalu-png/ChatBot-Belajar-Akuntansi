@@ -49,7 +49,7 @@ if user_input and user_input.strip():
     st.session_state.history.append(("user", message))
 
     # Panggil Groq LLM
-  client = Groq()
+ 
 completion = client.chat.completions.create(
     model="llama-3.3-70b-versatile",
     messages=[
@@ -62,6 +62,7 @@ completion = client.chat.completions.create(
 print(completion.choices[0].message.content)
 
 st.session_state.history.append(("assistant", bot_reply))
+
 
 
 
