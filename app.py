@@ -1,4 +1,3 @@
-pip install groq
 import streamlit as st
 import os
 from groq import Groq
@@ -63,6 +62,7 @@ completion = client.chat.completions.create(
 print(completion.choices[0].message.content)
 
 st.session_state.history.append(("assistant", bot_reply))
+
 
 
 
