@@ -1,11 +1,18 @@
 import streamlit as st
 import os
+from dotenv import load_dotenv
 from groq import Groq
 
 # ============= CONFIG =============
 st.set_page_config(page_title="Belajar Akuntansi", layout="centered")
 
+load_dotenv()
 api_key = os.getenv("GROQ_API_KEY")
+
+if not api_key:
+    st.error("❌ API Key Groq tidak ditemukan. Pastikan sudah di-set di .env atau di Streamlit Secrets.")
+    st.stop()
+
 client = Groq(api_key=api_key)
 # ============= CSS =============
 st.markdown("""
@@ -43,5 +50,6 @@ with st.form("chat_form", clear_on_submit=True):
     if submitted and user_input.strip():
         st.session_state.history.append(("user", user_input.strip()))
         # Panggil API seperti biasa
+
 
 
