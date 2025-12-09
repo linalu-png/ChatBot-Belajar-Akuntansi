@@ -7,7 +7,6 @@ st.set_page_config(page_title="Belajar Akuntansi", layout="centered")
 
 api_key = os.getenv("GROQ_API_KEY")
 
-client = Groq(api_key=api_key)
 # ============= CSS =============
 st.markdown("""
 <style>
@@ -44,6 +43,7 @@ with st.form("chat_form", clear_on_submit=True):
     if submitted and user_input.strip():
         st.session_state.history.append(("user", user_input.strip()))
         # Panggil API seperti biasa
+
 
 
 
