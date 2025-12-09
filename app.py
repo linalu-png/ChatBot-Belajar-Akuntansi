@@ -5,8 +5,6 @@ from groq import Groq
 # ============= CONFIG =============
 st.set_page_config(page_title="Belajar Akuntansi", layout="centered")
 
-api_key = os.getenv("GROQ_API_KEY")
-
 # ============= CSS =============
 st.markdown("""
 <style>
@@ -62,6 +60,7 @@ response = client.chat.completions.create(
 print(completion.choices[0].message.content)
 
 st.session_state.history.append(("assistant", bot_reply))
+
 
 
 
