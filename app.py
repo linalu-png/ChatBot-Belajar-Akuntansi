@@ -6,7 +6,7 @@ from groq import Groq
 st.set_page_config(page_title="Belajar Akuntansi", layout="centered")
 
 api_key = os.getenv("GROQ_API_KEY")
-client = Groq(api_key=api_key)
+
 # ================= CSS =================
 st.markdown("""
 <style>
@@ -71,6 +71,7 @@ st.text_input(
     key="text_input",
     on_change=handle_submit
 )
+
 
 
 
