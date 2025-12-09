@@ -50,21 +50,20 @@ if user_input and user_input.strip():
     st.session_state.history.append(("user", message))
 
     # Panggil Groq LLM
-   try:
-    messages = [{"role": "system", "content": "Kamu adalah chatbot akuntansi yang chill, ramah, dan mudah dipahami."}]
-    messages += [{"role": role, "content": content} for role, content in st.session_state.history]
-
   client = Groq()
 completion = client.chat.completions.create(
     model="llama-3.3-70b-versatile",
     messages=[
         {
-    # akses konten jawaban dengan .content, bukan ["content"]
-    bot_reply = response.choices[0].message.content
-except Exception as e:
-    bot_reply = f"❌ Terjadi error saat memanggil API: {e}"
+            "role": "user",
+            "content": "Kamu adalah chatbot akuntansi yang chill, ramah, dan mudah dipahami"
+        }
+    ]
+)
+print(completion.choices[0].message.content)
 
 st.session_state.history.append(("assistant", bot_reply))
+
 
 
 
