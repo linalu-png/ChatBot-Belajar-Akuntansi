@@ -1,0 +1,31 @@
+name: Run App with API Key
+
+on:
+  push:
+    branches:
+      - main  # trigger saat push ke main branch
+
+jobs:
+  run-app:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout kode repo
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Setup Python
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      # Install dependencies
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      # Jalankan app.py dengan API key dari GitHub Secret
+      - name: Run app
+        env:
+          GROG_API_KEY: ${{ secrets.GROG_API_KEY }}
+        run: python app.py
